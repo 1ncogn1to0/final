@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting and Guessing Game</title>
+    <link rel="stylesheet" href="./css/style.css">
+    
+    <script>
+        
+        
+        let randomNumber;
+        let attempts = 0;
+        let isDarkMode = false; // Variable to track mode
+
+        function startGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1; 
+            attempts = 0;
+            document.getElementById('result').textContent = "Guess a number between 1 and 100!";
+            document.getElementById('attempts').textContent = "Attempts: 0";
+            document.getElementById('guessInput').value = '';
+            document.getElementById('previousResults').innerHTML = ''; // Clear previous results
+
+            displayPreviousResults(); // Load previous game results on new game start
+        }
+
+        function makeGuess() {
+            const guess = Number(document.getElementById('guessInput').value);
+            attempts++;
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                document.getElementById('result').textContent = "Please enter a number between 1 and 100.";
+                return;
+            }
+
+            if (guess === randomNumber) {
+                const resultMessage = `Congratulations! You've guessed the number ${randomNumber} in ${attempts} attempts!`;
+                document.getElementById('result').textContent = resultMessage;
+
+                // Save game result to local storage when the game is won
+                saveGameResult('won', attempts, randomNumber);
+                displayPreviousResults();
+                startGame(); // Restart the game automatically after a win
+            } else {
+                const feedbackMessage = guess < randomNumber ? "Too low! Try again." : "Too high! Try again.";
+                document.getElementById('result').textContent = feedbackMessage;
+            }
+
+            document.getElementById('attempts').textContent = `Attempts: ${attempts}`;
+        }
+
+        function saveGameResult(result, attempts, number) {
+            const previousResults = JSON.parse(localStorage.getItem('previousResults')) || [];
+            previousResults.push({ result, attempts, number });
+            localStorage.setItem('previousResults', JSON.stringify(previousResults));
+        }
+
+        function displayPreviousResults() {
+            const previousResults = JSON.parse(localStorage.getItem('previousResults')) || [];
+            const resultsContainer = document.getElementById('previousResults');
+            resultsContainer.innerHTML = '';
+
+            previousResults.forEach((game, index) => {
+                const resultText = game.result === 'won'
+                    ? `Game ${index + 1}: Won! Guessed ${game.number} in ${game.attempts} attempts.`
+                    : `Game ${index + 1}: Lost. The number was ${game.number}.`;
+
+                const resultElement = document.createElement('p');
+                resultElement.textContent = resultText;
+                resultsContainer.appendChild(resultElement);
+            });
+        }
+
+        function sortNumbers(order) {
+            let numbersInput = document.getElementById('numbersInput').value;
+            let numbersArray = numbersInput.split(',').map(Number);
+
+            if (numbersArray.some(isNaN)) {
+                alert("Please enter only numbers separated by commas.");
+                return;
+            }
+
+            if (order === 'ascending') {
+                numbersArray.sort((a, b) => a - b);
+            } else if (order === 'descending') {
+                numbersArray.sort((a, b) => b - a);
+            }
+
+            document.getElementById('sortedResult').textContent = `Sorted numbers: ${numbersArray.join(', ')}`;
+        }
+
+        function changeBackgroundColor() {
+            const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            document.body.style.backgroundColor = randomColor;
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.style.backgroundColor = isDarkMode ? '#333' : '#fff';
+            document.body.style.color = isDarkMode ? '#fff' : '#000';
+            
+            // Save the chosen theme in localStorage
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        function displayDateTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false 
+            };
+            document.getElementById('dateTime').textContent = now.toLocaleString('en-US', options);
+        }
+
+        function showCurrentTime() {
+            const now = new Date();
+            const options = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false 
+            };
+            document.getElementById('currentTime').textContent = `Current Time: ${now.toLocaleString('en-US', options)}`;
+        }
+
+        function setSiteRating(value) {
+            localStorage.setItem('siteRating', value);
+            updateStarDisplay();
+        }
+
+        function updateStarDisplay() {
+            const ratingValue = localStorage.getItem('siteRating') || 0;
+            const stars = document.querySelectorAll('.site-star');
+            stars.forEach((star, index) => {
+                star.classList.toggle('selected', index < ratingValue);
+            });
+        }
+
+        function switchPage(direction) {
+            const pages = ['index.html', 'books.html', 'tool.html', 'register.html']; // List of pages
+            const currentPage = window.location.href.split('/').pop();
+            const currentIndex = pages.indexOf(currentPage);
+
+            if (direction === 'left' && currentIndex > 0) {
+                window.location.href = pages[currentIndex - 1];
+            } else if (direction === 'right' && currentIndex < pages.length - 1) {
+                window.location.href = pages[currentIndex + 1];
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                switchPage('left');
+            } else if (event.key === 'ArrowRight') {
+                switchPage('right');
+            }
+        });
+
+        setInterval(displayDateTime, 1000);
+        // Apply theme on page load
+        window.onload = function() {
+            applyTheme();
+            startGame();
+            updateStarDisplay();
+            displayPreviousResults(); // Load previous game results
+            setInterval(displayDateTime, 1000);
+        };
+    </script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .heading {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: #333;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: black;
+        }
+
+        /* Styles for stars */
+        .site-rating {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .site-star {
+            font-size: 24px;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .site-star:hover,
+        .site-star.selected {
+            color: gold;
+        }
+    </style>
+</head>
+<body onload="startGame(); updateStarDisplay();">
+    <header class="header">
+        <div class="container">
+            <div class="header-nav">
+                <a href="index.html" class="logo">Bookstore</a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"> <a href="index.html" class="nav-link">Home</a></li>
+                        <li class="nav-item"> <a href="books.html" class="nav-link">Books</a></li>
+                        <li class="nav-item"> <a href="register.html" class="nav-link">Log In</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Guess the Number Game -->
+        <h1 class="heading">Guess the Number Game</h1>
+        <p id="result">Guess a number between 1 and 100!</p>
+        <input type="number" id="guessInput" class="input-field" placeholder="Enter your guess" />
+        <button onclick="makeGuess()" class="btn">Guess</button>
+        <p id="attempts" class="result">Attempts: 0</p>
+        <div id="previousResults" class="result"></div> <!-- Block for displaying previous results -->
+
+        <!-- Sort Numbers -->
+        <h2>Sort Numbers</h2>
+        <input type="text" id="numbersInput" class="input-field" placeholder="Enter numbers separated by commas" />
+        <button onclick="sortNumbers('ascending')" class="btn">Sort Ascending</button>
+        <button onclick="sortNumbers('descending')" class="btn">Sort Descending</button>
+        <p id="sortedResult" class="result"></p>
+
+        <!-- Background Color Changer -->
+        <h2>Change Background Color</h2>
+        <button onclick="changeBackgroundColor()" class="btn">Change Color</button>
+
+        <!-- Dark Mode Toggle -->
+        <h2>Toggle Dark Mode</h2>
+        <button onclick="toggleDarkMode()" class="btn">Toggle Dark Mode</button>
+
+        <!-- Current Time Display -->
+        <h2 id="currentTime">Current Time:</h2>
+        <h2 id="dateTime">Date and Time:</h2>
+
+        <!-- Site Rating -->
+        <h2>Rate Our Site</h2>
+        <div class="site-rating">
+            <span class="site-star" onclick="setSiteRating(1)">★</span>
+            <span class="site-star" onclick="setSiteRating(2)">★</span>
+            <span class="site-star" onclick="setSiteRating(3)">★</span>
+            <span class="site-star" onclick="setSiteRating(4)">★</span>
+            <span class="site-star" onclick="setSiteRating(5)">★</span>
+        </div>
+    </div>
+</body>
+</html>

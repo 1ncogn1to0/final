@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script>
+        function validateForm(event) {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            let username = document.getElementById('username').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+            let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/; // Email format
+            let passwordMinLength = 6;
+
+            let errors = [];
+
+            // Username validation
+            if (username === "") {
+                errors.push("Username is required");
+            }
+
+            // Email validation
+            if (!email.match(emailPattern)) {
+                errors.push("Invalid email format");
+            }
+
+            // Password validation
+            if (password.length < passwordMinLength) {
+                errors.push("Password must be at least 6 characters long");
+            }
+
+            // Display errors or submit the form
+            if (errors.length > 0) {
+                alert(errors.join("\n"));
+            } else {
+                alert("Form submitted successfully!");
+                document.getElementById('registerForm').submit(); // Submit the form
+            }
+        }
+
+        function switchPage(direction) {
+            const pages = ['index.html', 'books.html', 'tool.html', 'register.html']; // List of pages
+            const currentPage = window.location.href.split('/').pop();
+            const currentIndex = pages.indexOf(currentPage);
+
+            if (direction === 'left' && currentIndex > 0) {
+                window.location.href = pages[currentIndex - 1];
+            } else if (direction === 'right' && currentIndex < pages.length - 1) {
+                window.location.href = pages[currentIndex + 1];
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                switchPage('left');
+            } else if (event.key === 'ArrowRight') {
+                switchPage('right');
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-nav">
+                <a href="index.html" class="logo">Bookstore</a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"> <a href="index.html" class="nav-link">Home</a></li>
+                        <li class="nav-item"> <a href="books.html" class="nav-link">Books</a></li>
+                        <li class="nav-item"> <a href="tool.html" class="nav-link">Tools</a></li>
+                        <li class="nav-item"> <a href="register.html" class="nav-link">Log In</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="form-container">
+        <h1 class="form-heading">Register</h1>
+        <form id="registerForm" onsubmit="validateForm(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

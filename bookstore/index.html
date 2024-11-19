@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link type="image/png" href="./images/favicon.png" rel="icon">
+    <script>
+        // Function to switch pages
+        function switchPage(direction) {
+            const pages = ['index.html', 'books.html', 'tool.html']; // List of pages
+            const currentPage = window.location.href.split('/').pop();
+            const currentIndex = pages.indexOf(currentPage);
+
+            if (direction === 'left' && currentIndex > 0) {
+                window.location.href = pages[currentIndex - 1];
+            } else if (direction === 'right' && currentIndex < pages.length - 1) {
+                window.location.href = pages[currentIndex + 1];
+            }
+        }
+
+        // Event listener for keydown to switch pages
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                switchPage('left');
+            } else if (event.key === 'ArrowRight') {
+                switchPage('right');
+            }
+        });
+        
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <!--header nav-->
+            <div class="header-nav">
+                <a href="index.html" class="logo">Bookstore</a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="books.html" class="nav-link">Books</a></li>
+                        <li class="nav-item"><a href="tool.html" class="nav-link">Tools</a></li>
+                        <li class="nav-item"><a href="register.html" class="nav-link">Log In</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!--Header content-->
+            <div class="header-row">
+                <div class="header-content">
+                    <h1 class="header-heading">Unlock the stories that speak to your soul.</h1>
+                    <p>Discover the stories that speak to your soul. Delve into our curated collection, where every book is a doorway to emotions, insights, and adventures that resonate with your deepest self.</p>
+                </div>
+                <div class="header-img">
+                    <img src="./images/hero.png" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <h3>About Bookstore</h3>
+                    <p>Your go-to destination for discovering a world of stories. We offer a curated selection of books for all kinds of readers.</p>
+                </div>
+                <div class="footer-section links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="books.html">Books</a></li>
+                        <li><a href="register.html">Log In</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@bookstore.com</p>
+                    <p>Phone: 8 800 555 3535</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Bookstore. All rights reserved. | Created by Rashatov Samat
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
